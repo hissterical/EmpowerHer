@@ -6,7 +6,7 @@ import {
   ScrollView, 
   TouchableOpacity 
 } from 'react-native';
-import { FinancialContext } from '../_layout';
+import { FinancialContext } from '../context/FinancialContext';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 
@@ -14,7 +14,7 @@ const DashboardScreen = ({ navigation }) => {
   const financial = useContext(FinancialContext);
   const screenWidth = Dimensions.get('window').width;
   
-  // Calculate total income and expenses for the current month
+  // Calculate total income and expenses for the current monavinth
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
   

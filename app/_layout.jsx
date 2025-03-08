@@ -17,7 +17,7 @@ export default function AppLayout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="Dashboard"
           options={{
             title: 'Dashboard',
             tabBarIcon: ({ color, size }) => (
