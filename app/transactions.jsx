@@ -8,10 +8,12 @@ import {
   TextInput,
   Modal
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { FinancialContext } from '../context/FinancialContext';
 import { Ionicons } from '@expo/vector-icons';
 
-const TransactionScreen = ({ navigation }) => {
+const TransactionScreen = () => {
+  const router = useRouter();
   const financial = useContext(FinancialContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -376,7 +378,7 @@ const TransactionScreen = ({ navigation }) => {
           ) : (
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => navigation.navigate('AddTransaction')}
+              onPress={() => router.push('AddTransaction')}
             >
               <Text style={styles.addButtonText}>Add Transaction</Text>
             </TouchableOpacity>
@@ -386,7 +388,7 @@ const TransactionScreen = ({ navigation }) => {
       
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => navigation.navigate('AddTransaction')}
+        onPress={() => router.push('AddTransaction')}
       >
         <Ionicons name="add" size={30} color="#fff" />
       </TouchableOpacity>

@@ -43,6 +43,15 @@ export default function AppLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="advice"
+          options={{
+            title: 'AI Advisor',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="analytics" size={size} color={color} />
+            ),
+          }}
+        />
       </Tabs>
     </FinancialContextProvider>
   );
