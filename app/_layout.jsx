@@ -34,6 +34,15 @@ export default function AppLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="learning"
+          options={{
+            title: 'Learning',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="school" size={size} color={color} />
+            ),
+          }}
+        />
       </Tabs>
     </FinancialContextProvider>
   );
