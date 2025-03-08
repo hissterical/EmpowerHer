@@ -8,7 +8,7 @@ import {
   TextInput,
   Modal
 } from 'react-native';
-import { FinancialContext } from '../../context/FinancialContext';
+import { FinancialContext } from '../context/FinancialContext';
 import { Ionicons } from '@expo/vector-icons';
 
 const TransactionScreen = ({ navigation }) => {
