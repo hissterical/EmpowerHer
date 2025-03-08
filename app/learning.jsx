@@ -6,6 +6,7 @@ import {
   ScrollView, 
   TouchableOpacity, 
   FlatList,
+  Linking,
   Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,6 +24,7 @@ const LearningScreen = () => {
       category: 'Saving',
       duration: '15 min',
       level: 'Beginner',
+      link:'https://www.youtube.com/watch?v=hyABApQ4HoI',
       progress: 0.75
     },
     {
@@ -31,6 +33,7 @@ const LearningScreen = () => {
       category: 'Investing',
       duration: '20 min',
       level: 'Beginner',
+      link:'https://www.youtube.com/watch?v=86rPBAnRCHc',
       progress: 0.3
     },
     {
@@ -121,7 +124,7 @@ const LearningScreen = () => {
   const renderCourseItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.courseCard}
-      onPress={() => console.log('Course selected:', item.title)}
+      onPress={() => Linking.openURL(item.link)}
     >
       <View style={styles.courseImageContainer}>
         <View style={styles.categoryBadge}>
