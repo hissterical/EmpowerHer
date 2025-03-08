@@ -6,7 +6,7 @@ import {
   ScrollView, 
   TouchableOpacity 
 } from 'react-native';
-import { FinancialContext } from '../App';
+import { FinancialContext } from '../_layout';
 import { LineChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 
