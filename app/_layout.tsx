@@ -1,39 +1,76 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { FinancialContextProvider } from '../context/FinancialContext';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function AppLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <FinancialContextProvider>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: '#8A2BE2',
+          tabBarInactiveTintColor: 'gray',
+          headerStyle: {
+            backgroundColor: '#8A2BE2',
+          },
+          headerTintColor: '#fff',
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Dashboard',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="budget"
+          options={{
+            title: 'Budget',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="pie-chart" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="transactions"
+          options={{
+            title: 'Transactions',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="receipt" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="goals"
+          options={{
+            title: 'Goals',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="star" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="education"
+          options={{
+            title: 'Learn',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="book" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: 'Profile',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" size={size} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
+    </FinancialContextProvider>
   );
 }
