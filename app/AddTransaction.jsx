@@ -8,17 +8,19 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FinancialContext } from '../context/FinancialContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useLocalSearchParams } from 'expo-router';
 
-const AddTransaction = () => {
+const AddScreen = () => {
   const navigation = useNavigation();
+  const params = useLocalSearchParams();
   const context = useContext(FinancialContext);
+  const mode = params.mode || 'transaction'; // 'transaction', 'goal', or 'budget'
 
-  // If context is not available, show loading
   if (!context) {
     return (
       <View style={styles.loadingContainer}>
@@ -27,29 +29,64 @@ const AddTransaction = () => {
     );
   }
 
-  const { addIncome, addExpense } = context;
+  const { addIncome, addExpense, addGoal, addBudget } = context;
+  const [type, setType] = useState('expense');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [note, setNote] = useState('');
-  const [type, setType] = useState('expense'); // Default to expense
+  const [goalName, setGoalName] = useState('');
+  const [targetDate, setTargetDate] = useState('');
+
+  const getHeaderTitle = () => {
+    switch (mode) {
+      case 'goal':
+        return 'Add Financial Goal';
+      case 'budget':
+        return 'Add Budget';
+      default:
+        return 'Add Transaction';
+    }
+  };
 
   const handleSubmit = () => {
-    if (!amount || !category) {
-      alert('Please fill in amount and category');
+    if (!amount || (mode === 'transaction' && !category) || (mode === 'goal' && !goalName)) {
+      alert('Please fill in all required fields');
       return;
     }
 
-    const transactionData = {
-      amount: parseFloat(amount),
-      category,
-      note,
-      date: new Date().toISOString(),
-    };
+    switch (mode) {
+      case 'goal':
+        const goalData = {
+          name: goalName,
+          target: parseFloat(amount),
+          current: 0,
+          date: targetDate || new Date(new Date().setMonth(new Date().getMonth() + 6)).toISOString(),
+        };
+        addGoal(goalData);
+        break;
 
-    if (type === 'income') {
-      addIncome(transactionData);
-    } else {
-      addExpense(transactionData);
+      case 'budget':
+        const budgetData = {
+          category,
+          amount: parseFloat(amount),
+          period: new Date().toLocaleString('default', { month: 'long' }),
+          note
+        };
+        addBudget(budgetData);
+        break;
+
+      default:
+        const transactionData = {
+          amount: parseFloat(amount),
+          category,
+          note,
+          date: new Date().toISOString(),
+        };
+        if (type === 'income') {
+          addIncome(transactionData);
+        } else {
+          addExpense(transactionData);
+        }
     }
     
     navigation.goBack();
@@ -68,67 +105,131 @@ const AddTransaction = () => {
           >
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Transaction</Text>
+          <Text style={styles.headerTitle}>{getHeaderTitle()}</Text>
         </View>
 
         <View style={styles.form}>
-          <View style={styles.typeSelector}>
-            <TouchableOpacity 
-              style={[
-                styles.typeButton, 
-                type === 'expense' && styles.typeButtonSelected
-              ]}
-              onPress={() => setType('expense')}
-            >
-              <Text style={[
-                styles.typeButtonText,
-                type === 'expense' && styles.typeButtonTextSelected
-              ]}>Expense</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[
-                styles.typeButton, 
-                type === 'income' && styles.typeButtonSelected
-              ]}
-              onPress={() => setType('income')}
-            >
-              <Text style={[
-                styles.typeButtonText,
-                type === 'income' && styles.typeButtonTextSelected
-              ]}>Income</Text>
-            </TouchableOpacity>
-          </View>
+          {mode === 'transaction' && (
+            <View style={styles.typeSelector}>
+              <TouchableOpacity 
+                style={[
+                  styles.typeButton, 
+                  type === 'expense' && styles.typeButtonSelected
+                ]}
+                onPress={() => setType('expense')}
+              >
+                <Ionicons 
+                  name="arrow-down-circle" 
+                  size={24} 
+                  color={type === 'expense' ? '#fff' : '#666'} 
+                />
+                <Text style={[
+                  styles.typeButtonText,
+                  type === 'expense' && styles.typeButtonTextSelected
+                ]}>Expense</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[
+                  styles.typeButton, 
+                  type === 'income' && styles.typeButtonSelected
+                ]}
+                onPress={() => setType('income')}
+              >
+                <Ionicons 
+                  name="arrow-up-circle" 
+                  size={24} 
+                  color={type === 'income' ? '#fff' : '#666'} 
+                />
+                <Text style={[
+                  styles.typeButtonText,
+                  type === 'income' && styles.typeButtonTextSelected
+                ]}>Income</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {mode === 'goal' && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>
+                <Ionicons name="flag-outline" size={20} color="#333" style={styles.inputIcon} />
+                Goal Name
+              </Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="e.g., Emergency Fund, New Car"
+                  value={goalName}
+                  onChangeText={setGoalName}
+                />
+              </View>
+            </View>
+          )}
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Amount</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter amount"
-              keyboardType="decimal-pad"
-              value={amount}
-              onChangeText={setAmount}
-            />
+            <Text style={styles.label}>
+              <Ionicons name="cash-outline" size={20} color="#333" style={styles.inputIcon} />
+              {mode === 'goal' ? 'Target Amount' : 'Amount'}
+            </Text>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.currencySymbol}>$</Text>
+              <TextInput
+                style={[styles.input, styles.amountInput]}
+                placeholder="0.00"
+                keyboardType="decimal-pad"
+                value={amount}
+                onChangeText={setAmount}
+              />
+            </View>
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Category</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter category"
-              value={category}
-              onChangeText={setCategory}
-            />
-          </View>
+          {mode !== 'goal' && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>
+                <Ionicons name="pricetag-outline" size={20} color="#333" style={styles.inputIcon} />
+                Category
+              </Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder={mode === 'budget' ? "e.g., Groceries, Rent" : type === 'income' ? "e.g., Salary, Freelance" : "e.g., Food, Transport"}
+                  value={category}
+                  onChangeText={setCategory}
+                />
+              </View>
+            </View>
+          )}
+
+          {mode === 'goal' && (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>
+                <Ionicons name="calendar-outline" size={20} color="#333" style={styles.inputIcon} />
+                Target Date (Optional)
+              </Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="MM/YYYY"
+                  value={targetDate}
+                  onChangeText={setTargetDate}
+                />
+              </View>
+            </View>
+          )}
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Note (Optional)</Text>
-            <TextInput
-              style={[styles.input, styles.noteInput]}
-              placeholder="Enter note"
-              value={note}
-              onChangeText={setNote}
-              multiline
-            />
+            <Text style={styles.label}>
+              <Ionicons name="create-outline" size={20} color="#333" style={styles.inputIcon} />
+              Note (Optional)
+            </Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={[styles.input, styles.noteInput]}
+                placeholder="Add a note..."
+                value={note}
+                onChangeText={setNote}
+                multiline
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -137,7 +238,10 @@ const AddTransaction = () => {
         style={styles.submitButton}
         onPress={handleSubmit}
       >
-        <Text style={styles.submitButtonText}>Add Transaction</Text>
+        <Ionicons name="checkmark-circle" size={24} color="#fff" />
+        <Text style={styles.submitButtonText}>
+          {mode === 'goal' ? 'Add Goal' : mode === 'budget' ? 'Add Budget' : 'Add Transaction'}
+        </Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );
@@ -176,12 +280,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   typeButton: {
     flex: 1,
     paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   typeButtonSelected: {
     backgroundColor: '#8A2BE2',
@@ -189,6 +300,7 @@ const styles = StyleSheet.create({
   typeButtonText: {
     fontSize: 16,
     color: '#666',
+    marginLeft: 8,
   },
   typeButtonTextSelected: {
     color: '#fff',
@@ -202,14 +314,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#333',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  input: {
+  inputIcon: {
+    marginRight: 8,
+  },
+  inputWrapper: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
     borderWidth: 1,
     borderColor: '#ddd',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  currencySymbol: {
+    paddingLeft: 15,
+    fontSize: 16,
+    color: '#666',
+  },
+  input: {
+    flex: 1,
+    padding: 15,
+    fontSize: 16,
+  },
+  amountInput: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   noteInput: {
     height: 100,
@@ -221,11 +352,14 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   submitButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginLeft: 8,
   },
   loadingContainer: {
     flex: 1,
@@ -235,4 +369,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddTransaction; 
+export default AddScreen; 

@@ -14,6 +14,11 @@ export default function AppLayout() {
             backgroundColor: '#8A2BE2',
           },
           headerTintColor: '#fff',
+          tabBarStyle: {
+            paddingBottom: 5,
+            paddingTop: 5,
+            height: 60,
+          }
         }}
       >
         <Tabs.Screen
@@ -21,7 +26,7 @@ export default function AppLayout() {
           options={{
             title: 'Dashboard',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" size={size} color={color} />
+              <Ionicons name="stats-chart" size={size} color={color} />
             ),
           }}
         />
@@ -30,16 +35,25 @@ export default function AppLayout() {
           options={{
             title: 'Transactions',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="receipt" size={size} color={color} />
+              <Ionicons name="swap-vertical" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="budget"
+          options={{
+            title: 'Budget',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="wallet" size={size} color={color} />
             ),
           }}
         />
         <Tabs.Screen
           name="learning"
           options={{
-            title: 'Learning',
+            title: 'Learn',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="school" size={size} color={color} />
+              <Ionicons name="book" size={size} color={color} />
             ),
           }}
         />
@@ -48,7 +62,16 @@ export default function AppLayout() {
           options={{
             title: 'AI Advisor',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="analytics" size={size} color={color} />
+              <Ionicons name="sparkles" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="AddTransaction"
+          options={{
+            title: 'Add',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="add-circle" size={size} color={color} />
             ),
           }}
         />
