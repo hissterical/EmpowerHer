@@ -1,50 +1,32 @@
-# Welcome to your Expo app 👋
+A mobile-first budgeting and financial education app designed specifically for women. The app helps users take control of their finances by allowing them to:
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+✨ Features
+Smart Budgeting: Set monthly budgets based on income and categorized expenses (essentials, savings, leisure).
+Goal-Based Savings: Track progress toward specific savings goals like emergency funds, travel, or business.
+AI Financial Assistant: Get intelligent, personalized financial advice powered by the Gemini API.
+Interactive Dashboard: Visual representation of expenses using dynamic pie charts and budgeting summaries.
+Learnings Hub: Access curated financial literacy resources including videos, courses, webinars, and podcasts.
 
-## Get started
+📱 Screens
+Login / Signup
+Dashboard (with budget insights and AI bot)
+Transactions
+Budgeting (with pie chart + goal tracker)
+Learnings
 
-1. Install dependencies
+🔧 Tech Stack
+Frontend: React Native with Expo
+AI Integration: Gemini API
+Charting: react-native-svg-charts
+State Management: React Hooks + Context API
+Styling: Tailwind CSS via nativewind
 
-   ```bash
+How to Run:
+1) Clone the repo:
+   git clone https://github.com/your-username/SmartFinance.git
+   cd SmartFinance
+2) Install dependencies:
    npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3) Run on Expo
+   npx expo start
+📱 You must have the Expo Go app installed on your mobile device to preview the app.
